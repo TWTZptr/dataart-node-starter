@@ -2,6 +2,7 @@ const express = require('express');
 const validator = require('../../middlewares/validator');
 const { validateResource } = require('./validators');
 const { StatusCodes } = require('http-status-codes');
+const Models = require('../../models');
 
 const router = express.Router();
 
