@@ -5,7 +5,7 @@ module.exports = {
   host: db.host,
   port: db.port || 3306,
   dbname: db.database,
-  user: db.username,
+  username: db.username,
   password: db.password,
   charset: 'utf8mb4',
   connectionRetryCount: 5,

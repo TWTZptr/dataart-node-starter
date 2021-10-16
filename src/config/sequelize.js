@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_HOST } = process.env;
+const { DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_HOST, DB_PORT } = process.env;
 
 module.exports = {
   development: {
@@ -8,6 +8,7 @@ module.exports = {
     database: DB_DATABASE,
     host: DB_HOST,
     dialect: 'mysql',
+    port: DB_PORT,
   },
   test: {
     username: 'root',
