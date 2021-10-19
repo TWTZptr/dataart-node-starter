@@ -22,7 +22,7 @@ app.use(bodyParser.raw({ limit: APP.RAW_REQUEST_LIMIT }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/resources', resourceModule);
-app.use('/api/user', userModule);
+app.use('/api/users', userModule);
 
 //in case any route mismatches request url - send 404 statusCode
 app.use(error404Handler);

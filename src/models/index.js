@@ -32,7 +32,8 @@ try {
   sequelize.authenticate();
   sequelize.sync();
 } catch (e) {
-  Logger.console.error(e);
+  const logger = new Logger('DatabaseConnectionError');
+  logger.error(e);
 }
 
 db.sequelize = sequelize;
