@@ -5,6 +5,7 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const { DATABASE } = require('../config');
+const Logger = require('../utils/logger');
 const db = {};
 
 const sequelize = new Sequelize(
@@ -26,6 +27,13 @@ Object.keys(db).forEach((modelName) => {
     db[modelName].associate(db);
   }
 });
+
+try {
+  sequelize.authenticate();
+  sequelize.sync();
+} catch (e) {
+  Logger.console.error(e);
+}
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
