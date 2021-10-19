@@ -5,6 +5,7 @@ const errorHandler = require('./utils/errors/errorHandler');
 const responseInterceptor = require('./interceptors/response');
 const requestLogger = require('./utils/requestLogger');
 const resourceModule = require('./modules/resource');
+const userModule = require('./modules/user');
 
 const { APP } = require('./config');
 const { error404Handler } = require('./utils/errors');
@@ -21,6 +22,7 @@ app.use(bodyParser.raw({ limit: APP.RAW_REQUEST_LIMIT }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/resources', resourceModule);
+app.use('/api/user', userModule);
 
 //in case any route mismatches request url - send 404 statusCode
 app.use(error404Handler);
