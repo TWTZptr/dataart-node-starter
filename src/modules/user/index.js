@@ -5,7 +5,6 @@ const { StatusCodes } = require('http-status-codes');
 const { EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE } = require('./constants');
 const { ValidationError } = require('../../utils/errors');
 const db = require('../../models');
-const { Sequelize } = require('../../models');
 
 const router = express.Router();
 
@@ -18,13 +17,13 @@ const createUser = async (req, res, next) => {
       avatar_url: avatarUrl,
     });
 
-    res.sendResponse(StatusCodes.OK, item);
+    return res.sendResponse(StatusCodes.OK, item);
   } catch (err) {
-    if (err instanceof Sequelize.UniqueConstraintError) {
-      next(new ValidationError(EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE));
+    if (err instanceof db.Sequelize.UniqueConstraintError) {
+      return next(new ValidationError(EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE));
     }
 
-    next(err);
+    return next(err);
   }
 };
 

@@ -6,7 +6,9 @@ const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const { DATABASE } = require('../config');
 const Logger = require('../utils/logger');
+
 const db = {};
+const logger = new Logger('DatabaseConnectionError');
 
 const sequelize = new Sequelize(
   DATABASE.dbname,
@@ -32,7 +34,6 @@ try {
   sequelize.authenticate();
   sequelize.sync();
 } catch (e) {
-  const logger = new Logger('DatabaseConnectionError');
   logger.error(e);
 }
 
