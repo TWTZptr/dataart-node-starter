@@ -5,12 +5,18 @@ const { StatusCodes } = require('http-status-codes');
 const { EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE } = require('./constants');
 const { ValidationError } = require('../../utils/errors');
 const db = require('../../models');
+const checkUrl = require('./urlChecker');
 
 const router = express.Router();
 
 const createUser = async (req, res, next) => {
   try {
     const { name, email, avatarUrl } = req.body;
+
+    if (avatarUrl) {
+      await checkUrl(avatarUrl);
+    }
+
     const item = await db.User.create({
       name,
       email,
