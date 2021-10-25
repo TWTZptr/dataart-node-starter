@@ -13,9 +13,7 @@ const createUser = async (req, res, next) => {
   try {
     const { name, email, avatarUrl } = req.body;
 
-    if (avatarUrl)
-      // avatar url is not required
-      await checkUrl(avatarUrl);
+    if (avatarUrl) await checkUrl(avatarUrl);
 
     const item = await db.User.create({
       name,

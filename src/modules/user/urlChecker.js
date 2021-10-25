@@ -20,17 +20,19 @@ const doesAvatarUrlContainImage = async (url) => {
           response.destroy();
           return resolve();
         }
-        reject(new ValidationError(AVATAR_URL_IS_INCORRECT_MESSAGE));
+        return reject(new ValidationError(AVATAR_URL_IS_INCORRECT_MESSAGE));
       });
     };
 
-    url = new URL(url);
+    const avatarUrl = new URL(url);
 
     const getRequest =
-      url.protocol === 'http:' ? http.get(url, callback) : https.get(url, callback);
+      avatarUrl.protocol === 'http:'
+        ? http.get(avatarUrl, callback)
+        : https.get(avatarUrl, callback);
 
     getRequest.on('error', () => {
-      reject(new ValidationError(AVATAR_URL_IS_NOT_RESPONDING_MESSAGE));
+      return reject(new ValidationError(AVATAR_URL_IS_NOT_RESPONDING_MESSAGE));
     });
   });
 };
