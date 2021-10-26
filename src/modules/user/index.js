@@ -2,10 +2,14 @@ const express = require('express');
 const validator = require('../../middlewares/validator');
 const { validateUser } = require('./validators');
 const { StatusCodes } = require('http-status-codes');
-const { EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE } = require('./constants');
+const {
+  EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE,
+  PASSWORD_HASHING_SALT_ROUNDS,
+} = require('./constants');
 const { ValidationError } = require('../../utils/errors');
 const db = require('../../models');
 const checkUrl = require('./urlChecker');
+const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
@@ -17,11 +21,14 @@ const createUser = async (req, res, next) => {
       await checkUrl(avatarUrl);
     }
 
+    const salt = await bcrypt.genSalt(PASSWORD_HASHING_SALT_ROUNDS);
+    const passwordHash = await bcrypt.hash(password, salt);
+
     const item = await db.User.create({
       name,
       email,
       avatarUrl,
-      password,
+      password: passwordHash,
     });
 
     return res.sendResponse(StatusCodes.OK, item);

@@ -18,4 +18,5 @@ module.exports = {
     'Password should contain at least 1 cap letter, 1 default letter, 1 number and 1 specific symbol like !~^&*_#@',
   PASSWORD_CONTAIN_BLOCKED_SYMBOLS_MESSAGE:
     "Password can't contain spaces or cyrillic symbols",
+  PASSWORD_HASHING_SALT_ROUNDS: 10,
 };
