@@ -11,7 +11,7 @@ const router = express.Router();
 
 const createUser = async (req, res, next) => {
   try {
-    const { name, email, avatarUrl } = req.body;
+    const { name, email, avatarUrl, password } = req.body;
 
     if (avatarUrl) {
       await checkUrl(avatarUrl);
@@ -20,7 +20,8 @@ const createUser = async (req, res, next) => {
     const item = await db.User.create({
       name,
       email,
-      avatar_url: avatarUrl,
+      avatarUrl,
+      password,
     });
 
     return res.sendResponse(StatusCodes.OK, item);
