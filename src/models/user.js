@@ -36,6 +36,14 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'User',
+      hooks: {
+        afterCreate: (user) => {
+          delete user.dataValues.password;
+        },
+        afterUpdate: (user) => {
+          delete user.dataValues.password;
+        },
+      },
     },
   );
   return User;
