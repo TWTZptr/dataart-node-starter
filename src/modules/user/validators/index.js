@@ -5,40 +5,9 @@ const {
   EMAIL_MAX_LENGTH,
   NAME_MIN_LENGTH,
   AVATAR_URL_MAX_LENGTH,
-  REQUIRED_PASSWORD_SYMBOLS,
-  BLOCKED_PASSWORD_SYMBOLS,
-  PASSWORD_MAX_LENGTH,
-  PASSWORD_MIN_LENGTH,
-  PASSWORD_DOES_NOT_CONTAIN_REQUIRED_SYMBOLS_MESSAGE,
-  PASSWORD_CONTAIN_BLOCKED_SYMBOLS_MESSAGE,
 } = require('../constants');
-
-const validateUserPassword = (value, helpers) => {
-  let result = {
-    valid: true,
-    errorMessage: '',
-  };
-
-  BLOCKED_PASSWORD_SYMBOLS.forEach((symb) => {
-    if (value.match(symb)) {
-      result.valid = false;
-      return (result.errorMessage = PASSWORD_CONTAIN_BLOCKED_SYMBOLS_MESSAGE);
-    }
-  });
-
-  REQUIRED_PASSWORD_SYMBOLS.forEach((symb) => {
-    if (!value.match(symb)) {
-      result.valid = false;
-      return (result.errorMessage = PASSWORD_DOES_NOT_CONTAIN_REQUIRED_SYMBOLS_MESSAGE);
-    }
-  });
-
-  if (result.valid) {
-    return value;
-  } else {
-    return helpers.message(result.errorMessage);
-  }
-};
+const { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } = require('../../password/constants');
+const passwordService = require('../../password/service');
 
 const validateUser = {
   source: 'body',
@@ -53,7 +22,7 @@ const validateUser = {
     password: Joi.string()
       .min(PASSWORD_MIN_LENGTH)
       .max(PASSWORD_MAX_LENGTH)
-      .custom(validateUserPassword)
+      .custom(passwordService.validate)
       .required(),
   }),
 };
