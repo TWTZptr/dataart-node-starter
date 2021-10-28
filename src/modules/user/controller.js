@@ -8,8 +8,7 @@ const router = express.Router();
 
 const createUser = async (req, res, next) => {
   try {
-    const { name, email, avatarUrl, password } = req.body;
-    const user = await userService.createUser(name, email, password, avatarUrl);
+    const user = await userService.createUser(req.body);
     return res.sendResponse(StatusCodes.OK, user);
   } catch (err) {
     return next(err);

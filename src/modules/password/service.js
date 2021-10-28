@@ -7,38 +7,39 @@ const {
 } = require('./constants');
 const bcrypt = require('bcrypt');
 
-class PasswordService {
-  validate(value, helpers) {
-    let result = {
-      valid: true,
-      errorMessage: '',
-    };
+const validate = (value, helpers) => {
+  let result = {
+    valid: true,
+    errorMessage: '',
+  };
 
-    BLOCKED_PASSWORD_SYMBOLS.forEach((symb) => {
-      if (value.match(symb)) {
-        result.valid = false;
-        return (result.errorMessage = PASSWORD_CONTAIN_BLOCKED_SYMBOLS_MESSAGE);
-      }
-    });
-
-    REQUIRED_PASSWORD_SYMBOLS.forEach((symb) => {
-      if (!value.match(symb)) {
-        result.valid = false;
-        return (result.errorMessage = PASSWORD_DOES_NOT_CONTAIN_REQUIRED_SYMBOLS_MESSAGE);
-      }
-    });
-
-    if (result.valid) {
-      return value;
-    } else {
-      return helpers.message(result.errorMessage);
+  BLOCKED_PASSWORD_SYMBOLS.forEach((symb) => {
+    if (value.match(symb)) {
+      result.valid = false;
+      return (result.errorMessage = PASSWORD_CONTAIN_BLOCKED_SYMBOLS_MESSAGE);
     }
-  }
+  });
 
-  async hash(password) {
-    const salt = await bcrypt.genSalt(PASSWORD_HASHING_SALT_ROUNDS);
-    return await bcrypt.hash(password, salt);
-  }
-}
+  REQUIRED_PASSWORD_SYMBOLS.forEach((symb) => {
+    if (!value.match(symb)) {
+      result.valid = false;
+      return (result.errorMessage = PASSWORD_DOES_NOT_CONTAIN_REQUIRED_SYMBOLS_MESSAGE);
+    }
+  });
 
-module.exports = new PasswordService();
+  if (result.valid) {
+    return value;
+  } else {
+    return helpers.message(result.errorMessage);
+  }
+};
+
+const hash = async (password) => {
+  const salt = await bcrypt.genSalt(PASSWORD_HASHING_SALT_ROUNDS);
+  return await bcrypt.hash(password, salt);
+};
+
+module.exports = {
+  validate,
+  hash,
+};
