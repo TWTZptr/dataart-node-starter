@@ -5,10 +5,10 @@ const {
   AVATAR_URL_IS_NOT_RESPONDING_MESSAGE,
   AVATAR_URL_IS_INCORRECT_MESSAGE,
   ALLOWED_AVATAR_START_BITS,
-} = require('./constants');
-const { ValidationError } = require('../../utils/errors');
+} = require('../modules/user/constants');
+const { ValidationError } = require('../utils/errors');
 
-const doesAvatarUrlContainImage = async (url) => {
+const doesUrlContainAnImage = async (url) => {
   return new Promise((resolve, reject) => {
     const callback = (response) => {
       response.on('data', (chunk) => {
@@ -37,4 +37,4 @@ const doesAvatarUrlContainImage = async (url) => {
   });
 };
 
-module.exports = doesAvatarUrlContainImage;
+module.exports = { doesUrlContainAnImage };

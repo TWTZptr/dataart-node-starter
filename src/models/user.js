@@ -23,14 +23,27 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
-      avatar_url: {
+      avatarUrl: {
         type: DataTypes.STRING,
         allowNull: true,
+        field: 'avatar_url',
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
     },
     {
       sequelize,
       modelName: 'User',
+      hooks: {
+        afterCreate: (user) => {
+          delete user.dataValues.password;
+        },
+        afterUpdate: (user) => {
+          delete user.dataValues.password;
+        },
+      },
     },
   );
   return User;
