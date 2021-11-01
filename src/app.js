@@ -6,6 +6,7 @@ const responseInterceptor = require('./interceptors/response');
 const requestLogger = require('./utils/requestLogger');
 const resourceModule = require('./modules/resource');
 const userController = require('./modules/user/controller');
+const authController = require('./modules/auth/controller');
 
 const { APP } = require('./config');
 const { error404Handler } = require('./utils/errors');
@@ -23,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/resources', resourceModule);
 app.use('/api/users', userController);
+app.use('/api/auth', authController);
 
 //in case any route mismatches request url - send 404 statusCode
 app.use(error404Handler);
