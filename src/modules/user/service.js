@@ -29,6 +29,16 @@ const createUser = async (data) => {
   }
 };
 
+const getUserPasswordHash = async (email) => {
+  const user = await db.User.findOne({ where: { email } });
+  if (user) {
+    return user.password;
+  } else {
+    return null;
+  }
+};
+
 module.exports = {
   createUser,
+  getUserPasswordHash,
 };
