@@ -1,16 +1,12 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const { validateAuth } = require('./validators');
 const validator = require('../../middlewares/validator');
 const passwordService = require('../password/service');
 const userService = require('../user/service');
-const {
-  SECRET,
-  INVALID_CREDENTIALS_MESSAGE,
-  TOKEN_EXPIRATION_TIME,
-} = require('./constants');
+const { INVALID_CREDENTIALS_MESSAGE, TOKEN_EXPIRATION_TIME } = require('./constants');
 const { StatusCodes } = require('http-status-codes');
 const { UnauthorizedError } = require('../../utils/errors');
+const authService = require('./service');
 
 const router = express.Router();
 
@@ -18,18 +14,20 @@ const tryAuth = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const passwordHash = await userService.getUserPasswordHash(email);
-    if (passwordHash && (await passwordService.compare(password, passwordHash))) {
-      const accessToken = jwt.sign({ email }, SECRET, {
-        expiresIn: TOKEN_EXPIRATION_TIME,
-      });
+    const user = await userService.getUser(email);
+    if (user) {
+      await passwordService.compare(password, user.password);
+      const accessToken = authService.generateAccessToken(
+        { id: user.id, email: user.email },
+        { expiresIn: TOKEN_EXPIRATION_TIME },
+      );
 
-      res.sendResponse(StatusCodes.OK, { accessToken });
+      return res.sendResponse(StatusCodes.OK, { accessToken });
     } else {
-      next(new UnauthorizedError(INVALID_CREDENTIALS_MESSAGE));
+      return next(new UnauthorizedError(INVALID_CREDENTIALS_MESSAGE));
     }
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 

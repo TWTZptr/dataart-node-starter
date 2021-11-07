@@ -29,10 +29,10 @@ const createUser = async (data) => {
   }
 };
 
-const getUserPasswordHash = async (email) => {
+const getUser = async (email) => {
   const user = await db.User.findOne({ where: { email } });
   if (user) {
-    return user.password;
+    return user;
   } else {
     return null;
   }
@@ -40,5 +40,5 @@ const getUserPasswordHash = async (email) => {
 
 module.exports = {
   createUser,
-  getUserPasswordHash,
+  getUser,
 };
