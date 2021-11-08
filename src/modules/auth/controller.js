@@ -9,9 +9,8 @@ const authService = require('./service');
 const router = express.Router();
 
 const tryAuth = async (req, res, next) => {
-  const { email, password } = req.body;
-
   try {
+    const { email, password } = req.body;
     const user = await userService.getUser({ email });
     await passwordService.compare(password, user && user.password);
 
