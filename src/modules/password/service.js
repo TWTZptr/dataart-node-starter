@@ -42,11 +42,11 @@ const hash = async (password) => {
 };
 
 const compare = async (password, hash) => {
-  if (await bcrypt.compare(password, hash)) {
-    return;
-  } else {
+  const comparePasswords = hash && (await bcrypt.compare(password, hash));
+  if (!comparePasswords) {
     throw new UnauthorizedError(INVALID_CREDENTIALS_MESSAGE);
   }
+  return;
 };
 
 module.exports = {
