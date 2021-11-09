@@ -19,7 +19,8 @@ const tryAuth = async (req, res, next) => {
       email: user.email,
     });
 
-    return res.sendResponse(StatusCodes.OK, { accessToken });
+    user.password = undefined;
+    return res.sendResponse(StatusCodes.OK, { accessToken, user });
   } catch (err) {
     return next(err);
   }

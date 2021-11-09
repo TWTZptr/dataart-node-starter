@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { APP_HOST, APP_PORT } = process.env;
+const { APP_HOST, APP_PORT, TOKEN_EXPIRATION_TIME, SECRET } = process.env;
 const database = require('./database');
 
 module.exports = {
@@ -11,4 +11,8 @@ module.exports = {
     RAW_REQUEST_LIMIT: '50mb',
   },
   DATABASE: database,
+  AUTH: {
+    SECRET,
+    TOKEN_EXPIRATION_TIME,
+  },
 };
