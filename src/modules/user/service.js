@@ -29,6 +29,11 @@ const createUser = async (data) => {
   }
 };
 
+const getUser = ({ email }) => {
+  return db.User.findOne({ where: { email } });
+};
+
 module.exports = {
   createUser,
+  getUser,
 };

@@ -5,7 +5,9 @@ const {
   REQUIRED_PASSWORD_SYMBOLS,
   PASSWORD_HASHING_SALT_ROUNDS,
 } = require('./constants');
+const { INVALID_CREDENTIALS_MESSAGE } = require('../auth/constants');
 const bcrypt = require('bcrypt');
+const { UnauthorizedError } = require('../../utils/errors');
 
 const validate = (value, helpers) => {
   let result = {
@@ -39,7 +41,16 @@ const hash = async (password) => {
   return await bcrypt.hash(password, salt);
 };
 
+const compare = async (password, hash) => {
+  const comparePasswords = hash && (await bcrypt.compare(password, hash));
+  if (!comparePasswords) {
+    throw new UnauthorizedError(INVALID_CREDENTIALS_MESSAGE);
+  }
+  return;
+};
+
 module.exports = {
   validate,
   hash,
+  compare,
 };
