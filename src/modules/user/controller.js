@@ -3,6 +3,7 @@ const validator = require('../../middlewares/validator');
 const { validateUser } = require('./validators');
 const { StatusCodes } = require('http-status-codes');
 const userService = require('./service');
+const authMiddleware = require('../../middlewares/auth');
 
 const router = express.Router();
 
@@ -16,5 +17,9 @@ const createUser = async (req, res, next) => {
 };
 
 router.post('/', validator(validateUser), createUser);
+
+router.get('/me', authMiddleware, (req, res, next) =>
+  res.sendResponse(StatusCodes.OK, req.user),
+);
 
 module.exports = router;
