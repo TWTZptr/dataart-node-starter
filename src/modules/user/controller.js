@@ -16,10 +16,12 @@ const createUser = async (req, res, next) => {
   }
 };
 
+const getUser = (req, res, next) => {
+  return res.sendResponse(StatusCodes.OK, req.user);
+};
+
 router.post('/', validator(validateUser), createUser);
 
-router.get('/me', authMiddleware, (req, res, next) =>
-  res.sendResponse(StatusCodes.OK, req.user),
-);
+router.get('/me', authMiddleware, getUser);
 
 module.exports = router;
