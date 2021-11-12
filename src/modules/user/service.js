@@ -29,8 +29,8 @@ const createUser = async (data) => {
   }
 };
 
-const getUser = (criterion) => {
-  return db.User.findOne({ where: criterion });
+const getUser = (filter) => {
+  return db.User.findOne({ where: filter });
 };
 
 module.exports = {
