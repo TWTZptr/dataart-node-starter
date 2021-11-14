@@ -25,11 +25,11 @@ passport.use(
 
 module.exports = (req, res, next) => {
   passport.authenticate('jwt', (err, user, info) => {
-    if (err || !user || info) {
+    if (err || !user) {
       return next(new UnauthorizedError(INVALID_TOKEN_MESSAGE));
     }
     user.password = undefined;
     req.user = user;
-    next();
+    return next();
   })(req, res, next);
 };
