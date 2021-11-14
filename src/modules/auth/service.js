@@ -3,8 +3,8 @@ const { AUTH } = require('../../config');
 
 const generateAccessToken = (
   payload,
-  options = { expiresIn: AUTH.TOKEN_EXPIRATION_TIME },
-) => jwt.sign(payload, AUTH.SECRET, options);
+  options = { expiresIn: AUTH.ACCESS_TOKEN_EXPIRATION_TIME },
+) => jwt.sign(payload, AUTH.ACCESS_TOKEN_SECRET, options);
 
 module.exports = {
   generateAccessToken,

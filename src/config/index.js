@@ -1,6 +1,13 @@
 require('dotenv').config();
 
-const { APP_HOST, APP_PORT, TOKEN_EXPIRATION_TIME, SECRET } = process.env;
+const {
+  APP_HOST,
+  APP_PORT,
+  ACCESS_TOKEN_SECRET,
+  ACCESS_TOKEN_EXPIRATION_TIME,
+  REFRESH_TOKEN_SECRET,
+  REFRESH_TOKEN_EXPIRATION_TIME,
+} = process.env;
 const database = require('./database');
 
 module.exports = {
@@ -12,7 +19,9 @@ module.exports = {
   },
   DATABASE: database,
   AUTH: {
-    SECRET,
-    TOKEN_EXPIRATION_TIME,
+    ACCESS_TOKEN_SECRET,
+    ACCESS_TOKEN_EXPIRATION_TIME,
+    REFRESH_TOKEN_SECRET,
+    REFRESH_TOKEN_EXPIRATION_TIME,
   },
 };
