@@ -19,8 +19,10 @@ const tryAuth = async (req, res, next) => {
       email: user.email,
     });
 
+    const bearerToken = `Bearer ${accessToken}`;
+
     user.password = undefined;
-    return res.sendResponse(StatusCodes.OK, { accessToken, user });
+    return res.sendResponse(StatusCodes.OK, { accessToken: bearerToken, user });
   } catch (err) {
     return next(err);
   }
