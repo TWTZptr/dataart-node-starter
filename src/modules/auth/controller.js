@@ -56,7 +56,13 @@ const refreshToken = async (req, res, next) => {
   }
 };
 
+const logout = (req, res, next) => {
+  res.clearCookie('refreshToken');
+  return res.sendResponse(StatusCodes.OK);
+};
+
 router.post('/', validator(validateAuth), tryAuth);
 router.post('/refresh-token', validator(validateRefresh), refreshToken);
+router.post('/logout', logout);
 
 module.exports = router;
