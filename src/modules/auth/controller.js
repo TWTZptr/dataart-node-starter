@@ -5,7 +5,6 @@ const passwordService = require('../password/service');
 const userService = require('../user/service');
 const { StatusCodes } = require('http-status-codes');
 const authService = require('./service');
-const { AUTH } = require('../../config');
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 
 const router = express.Router();
@@ -21,22 +20,13 @@ const tryAuth = async (req, res, next) => {
       email: user.email,
     });
 
-    const bearerToken = processTokenPair(res, tokenPair);
+    const bearerToken = authService.processTokenPair(res, tokenPair);
 
     user.password = undefined;
     return res.sendResponse(StatusCodes.OK, { accessToken: bearerToken, user });
   } catch (err) {
     return next(err);
   }
-};
-
-const processTokenPair = (res, tokenPair) => {
-  res.cookie('refreshToken', tokenPair.refreshToken, {
-    httpOnly: true,
-    maxAge: AUTH.REFRESH_TOKEN_EXPIRATION_TIME,
-  });
-
-  return `Bearer ${tokenPair.accessToken}`;
 };
 
 const refreshToken = async (req, res, next) => {
@@ -48,7 +38,7 @@ const refreshToken = async (req, res, next) => {
       refreshToken: oldRefreshToken,
     });
 
-    const bearerToken = processTokenPair(res, tokenPair);
+    const bearerToken = authService.processTokenPair(res, tokenPair);
 
     return res.sendResponse(StatusCodes.OK, { bearerToken });
   } catch (err) {
@@ -62,7 +52,7 @@ const logout = (req, res, next) => {
 };
 
 router.post('/', validator(validateAuth), tryAuth);
-router.post('/refresh-token', validator(validateRefresh), refreshToken);
-router.post('/logout', logout);
+router.post('/refreshment', validator(validateRefresh), refreshToken);
+router.post('/out', logout);
 
 module.exports = router;

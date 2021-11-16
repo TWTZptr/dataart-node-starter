@@ -4,20 +4,28 @@ const { UnauthorizedError } = require('../../utils/errors');
 const { INVALID_TOKEN_MESSAGE } = require('../auth/constants');
 const userService = require('../user/service');
 
-const generateAccessToken = (
+const generateToken = (
   payload,
+  secret = AUTH.ACCESS_TOKEN_SECRET,
   options = { expiresIn: AUTH.ACCESS_TOKEN_EXPIRATION_TIME },
-) => jwt.sign(payload, AUTH.ACCESS_TOKEN_SECRET, options);
+) => jwt.sign(payload, secret, options);
 
-const generateRefreshToken = (
+const generateTokenPair = (
   payload,
-  options = { expiresIn: AUTH.REFRESH_TOKEN_EXPIRATION_TIME },
-) => jwt.sign(payload, AUTH.REFRESH_TOKEN_SECRET, options);
-
-const generateTokenPair = (payload, options = {}) => {
+  secretPair = { refreshTokenSecret: AUTH.REFRESH_TOKEN_SECRET },
+  options = { refreshTokenOptions: { expiresIn: AUTH.REFRESH_TOKEN_EXPIRATION_TIME } },
+) => {
   return {
-    accessToken: generateAccessToken(payload, options.accessTokenOptions),
-    refreshToken: generateRefreshToken(payload, options.refreshTokenOptions),
+    accessToken: generateToken(
+      payload,
+      secretPair.accessTokenSecret,
+      options.accessTokenOptions,
+    ),
+    refreshToken: generateToken(
+      payload,
+      secretPair.refreshTokenSecret,
+      options.refreshTokenOptions,
+    ),
   };
 };
 
@@ -36,10 +44,7 @@ const regenerateTokens = async (oldTokenPair) => {
     complete: true,
   });
 
-  if (
-    refreshTokenPayload.email != accessTokenPayload.email ||
-    refreshTokenPayload.id != accessTokenPayload.id
-  ) {
+  if (refreshTokenPayload.id !== accessTokenPayload.id) {
     throw new UnauthorizedError(INVALID_TOKEN_MESSAGE);
   }
 
@@ -54,9 +59,18 @@ const regenerateTokens = async (oldTokenPair) => {
   });
 };
 
+const processTokenPair = (res, tokenPair) => {
+  res.cookie('refreshToken', tokenPair.refreshToken, {
+    httpOnly: true,
+    maxAge: AUTH.REFRESH_TOKEN_EXPIRATION_TIME,
+  });
+
+  return `Bearer ${tokenPair.accessToken}`;
+};
+
 module.exports = {
-  generateAccessToken,
-  generateRefreshToken,
+  generateToken,
   regenerateTokens,
   generateTokenPair,
+  processTokenPair,
 };
