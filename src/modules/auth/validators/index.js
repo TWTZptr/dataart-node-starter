@@ -15,14 +15,6 @@ const validateAuth = {
   }),
 };
 
-const validateRefresh = {
-  source: 'headers',
-  schema: Joi.object({
-    authorization: Joi.string().required(),
-  }).unknown(true),
-};
-
 module.exports = {
   validateAuth,
-  validateRefresh,
 };

@@ -1,5 +1,5 @@
 const express = require('express');
-const { validateAuth, validateRefresh } = require('./validators');
+const { validateAuth } = require('./validators');
 const validator = require('../../middlewares/validator');
 const passwordService = require('../password/service');
 const userService = require('../user/service');
