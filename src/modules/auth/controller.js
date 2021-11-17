@@ -5,7 +5,7 @@ const passwordService = require('../password/service');
 const userService = require('../user/service');
 const { StatusCodes } = require('http-status-codes');
 const authService = require('./service');
-const ExtractJwt = require('passport-jwt').ExtractJwt;
+const authMiddleware = require('../../middlewares/auth');
 
 const router = express.Router();
 
@@ -31,11 +31,9 @@ const tryAuth = async (req, res, next) => {
 
 const refreshToken = async (req, res, next) => {
   try {
-    const oldRefreshToken = req.cookies.refreshToken;
-    const oldAccessToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
-    const tokenPair = await authService.regenerateTokens({
-      accessToken: oldAccessToken,
-      refreshToken: oldRefreshToken,
+    const tokenPair = authService.generateTokenPair({
+      id: req.user.id,
+      email: req.user.email,
     });
 
     const bearerToken = authService.processTokenPair(res, tokenPair);
@@ -52,7 +50,7 @@ const logout = (req, res, next) => {
 };
 
 router.post('/', validator(validateAuth), tryAuth);
-router.post('/refreshment', validator(validateRefresh), refreshToken);
+router.post('/refreshment', authMiddleware.refresh, refreshToken);
 router.post('/out', logout);
 
 module.exports = router;
