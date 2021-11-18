@@ -15,14 +15,6 @@ const validateAuth = {
   }),
 };
 
-const validateLogout = {
-  source: 'cookies',
-  schema: Joi.object({
-    refreshToken: Joi.string().required(),
-  }).unknown(),
-};
-
 module.exports = {
   validateAuth,
-  validateLogout,
 };

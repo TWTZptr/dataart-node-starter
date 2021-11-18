@@ -59,6 +59,6 @@ const logout = (req, res, next) => {
 
 router.post('/', validator(validateAuth), tryAuth);
 router.put('/', authMiddleware.refresh, refreshToken);
-router.delete('/', validator(validateLogout), logout);
+router.delete('/', authMiddleware.access, logout);
 
 module.exports = router;
