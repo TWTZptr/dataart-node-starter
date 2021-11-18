@@ -7,22 +7,12 @@ const generateToken = (
   options = { expiresIn: AUTH.ACCESS_TOKEN_EXPIRATION_TIME },
 ) => jwt.sign(payload, secret, options);
 
-const generateTokenPair = (
-  payload,
-  secretPair = { refreshTokenSecret: AUTH.REFRESH_TOKEN_SECRET },
-  options = { refreshTokenOptions: { expiresIn: AUTH.REFRESH_TOKEN_EXPIRATION_TIME } },
-) => {
+const generateTokenPair = (payload) => {
   return {
-    accessToken: generateToken(
-      payload,
-      secretPair.accessTokenSecret,
-      options.accessTokenOptions,
-    ),
-    refreshToken: generateToken(
-      payload,
-      secretPair.refreshTokenSecret,
-      options.refreshTokenOptions,
-    ),
+    accessToken: generateToken(payload),
+    refreshToken: generateToken(payload, AUTH.REFRESH_TOKEN_SECRET, {
+      expiresIn: AUTH.REFRESH_TOKEN_EXPIRATION_TIME,
+    }),
   };
 };
 

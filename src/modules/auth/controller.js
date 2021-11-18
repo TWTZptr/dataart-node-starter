@@ -6,6 +6,8 @@ const userService = require('../user/service');
 const { StatusCodes } = require('http-status-codes');
 const authService = require('./service');
 const authMiddleware = require('../../middlewares/auth');
+const { UnauthorizedError } = require('../../utils/errors');
+const { INVALID_TOKEN_MESSAGE } = require('./constants');
 
 const router = express.Router();
 
@@ -31,6 +33,12 @@ const tryAuth = async (req, res, next) => {
 
 const refreshToken = async (req, res, next) => {
   try {
+    const user = userService.getUser({ id: req.user.id });
+
+    if (!user) {
+      next(new UnauthorizedError(INVALID_TOKEN_MESSAGE));
+    }
+
     const tokenPair = authService.generateTokenPair({
       id: req.user.id,
       email: req.user.email,
@@ -38,7 +46,7 @@ const refreshToken = async (req, res, next) => {
 
     const bearerToken = authService.processTokenPair(res, tokenPair);
 
-    return res.sendResponse(StatusCodes.OK, { bearerToken });
+    return res.sendResponse(StatusCodes.OK, { accessToken: bearerToken });
   } catch (err) {
     return next(err);
   }
@@ -50,7 +58,7 @@ const logout = (req, res, next) => {
 };
 
 router.post('/', validator(validateAuth), tryAuth);
-router.post('/refreshment', authMiddleware.refresh, refreshToken);
-router.post('/out', logout);
+router.put('/', authMiddleware.refresh, refreshToken);
+router.delete('/', logout);
 
 module.exports = router;
