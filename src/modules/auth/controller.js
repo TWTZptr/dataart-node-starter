@@ -1,5 +1,5 @@
 const express = require('express');
-const { validateAuth } = require('./validators');
+const { validateAuth, validateLogout } = require('./validators');
 const validator = require('../../middlewares/validator');
 const passwordService = require('../password/service');
 const userService = require('../user/service');
@@ -33,10 +33,10 @@ const tryAuth = async (req, res, next) => {
 
 const refreshToken = async (req, res, next) => {
   try {
-    const user = userService.getUser({ id: req.user.id });
+    const user = await userService.getUserById(req.user.id);
 
     if (!user) {
-      next(new UnauthorizedError(INVALID_TOKEN_MESSAGE));
+      return next(new UnauthorizedError(INVALID_TOKEN_MESSAGE));
     }
 
     const tokenPair = authService.generateTokenPair({
@@ -59,6 +59,6 @@ const logout = (req, res, next) => {
 
 router.post('/', validator(validateAuth), tryAuth);
 router.put('/', authMiddleware.refresh, refreshToken);
-router.delete('/', logout);
+router.delete('/', validator(validateLogout), logout);
 
 module.exports = router;

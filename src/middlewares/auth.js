@@ -33,7 +33,7 @@ passport.use(
       secretOrKey: AUTH.REFRESH_TOKEN_SECRET,
     },
     async (payload, done) => {
-      done({ id: payload.id, email: payload.email });
+      done(payload);
     },
   ),
 );

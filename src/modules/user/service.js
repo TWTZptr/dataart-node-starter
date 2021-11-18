@@ -33,7 +33,12 @@ const getUser = (filter) => {
   return db.User.findOne({ where: filter });
 };
 
+const getUserById = (id) => {
+  return db.User.findByPk(id);
+};
+
 module.exports = {
   createUser,
   getUser,
+  getUserById,
 };
