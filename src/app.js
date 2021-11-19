@@ -8,6 +8,7 @@ const resourceModule = require('./modules/resource');
 const userController = require('./modules/user/controller');
 const authController = require('./modules/auth/controller');
 const passport = require('passport');
+const cookieParser = require('cookie-parser');
 
 const { APP } = require('./config');
 const { error404Handler } = require('./utils/errors');
@@ -23,6 +24,7 @@ app.use(bodyParser.json({ limit: APP.JSON_REQUEST_LIMIT }));
 app.use(bodyParser.raw({ limit: APP.RAW_REQUEST_LIMIT }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
+app.use(cookieParser());
 
 app.use('/api/resources', resourceModule);
 app.use('/api/users', userController);

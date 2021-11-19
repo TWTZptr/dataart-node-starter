@@ -22,6 +22,6 @@ const getUser = (req, res, next) => {
 
 router.post('/', validator(validateUser), createUser);
 
-router.get('/me', authMiddleware, getUser);
+router.get('/me', authMiddleware.access, getUser);
 
 module.exports = router;
