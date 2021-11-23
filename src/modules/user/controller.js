@@ -1,6 +1,6 @@
 const express = require('express');
 const validator = require('../../middlewares/validator');
-const { validateUser } = require('./validators');
+const { validateUser, validateUserUpdate } = require('./validators');
 const { StatusCodes } = require('http-status-codes');
 const userService = require('./service');
 const authMiddleware = require('../../middlewares/auth');
@@ -20,8 +20,17 @@ const getUser = (req, res, next) => {
   return res.sendResponse(StatusCodes.OK, req.user);
 };
 
-router.post('/', validator(validateUser), createUser);
+const updateUser = async (req, res, next) => {
+  try {
+    const user = await userService.updateUser(req.user, req.body);
+    return res.sendResponse(StatusCodes.OK, user);
+  } catch (err) {
+    return next(err);
+  }
+};
 
+router.post('/', validator(validateUser), createUser);
 router.get('/me', authMiddleware.access, getUser);
+router.patch('/me', validator(validateUserUpdate), authMiddleware.access, updateUser);
 
 module.exports = router;
