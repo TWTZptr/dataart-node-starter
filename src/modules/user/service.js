@@ -1,11 +1,14 @@
 const { doesUrlContainAnImage } = require('../../helpers/urlChecker');
-const { EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE } = require('./constants');
+const {
+  EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE,
+  PHONE_NUMBER_IS_NOT_UNIQUE_MESSAGE,
+} = require('./constants');
 const db = require('../../models');
 const { ValidationError } = require('../../utils/errors');
 const passwordService = require('../password/service');
 
 const createUser = async (data) => {
-  const { name, email, password, avatarUrl } = data;
+  const { name, email, password, avatarUrl, phoneNumber } = data;
   try {
     if (avatarUrl) {
       await doesUrlContainAnImage(avatarUrl);
@@ -18,12 +21,17 @@ const createUser = async (data) => {
       email,
       avatarUrl,
       password: passwordHash,
+      phoneNumber,
     });
 
     return user;
   } catch (err) {
     if (err instanceof db.Sequelize.UniqueConstraintError) {
-      throw new ValidationError(EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE);
+      if (err.fields['users.phone_number']) {
+        throw new ValidationError(PHONE_NUMBER_IS_NOT_UNIQUE_MESSAGE);
+      } else {
+        throw new ValidationError(EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE);
+      }
     }
     throw err;
   }
