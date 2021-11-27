@@ -40,9 +40,15 @@ try {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.getFieldName = (errField, modelName) => {
+db.getFieldName = (errFields, modelName) => {
+  if (!db[modelName]) {
+    throw new Error(`Model "${modelName}" does not exist`);
+  }
   const { fieldRawAttributesMap } = db[modelName];
-  const field = Object.keys(errField)[0].split('.').at(-1);
+  const field = Object.keys(errFields)[0].split('.').at(-1);
+  if (!fieldRawAttributesMap[field]) {
+    throw new Error(`Attribute "${field}" does not exists`);
+  }
   return fieldRawAttributesMap[field].fieldName;
 };
 
