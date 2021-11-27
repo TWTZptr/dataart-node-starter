@@ -1,6 +1,5 @@
 module.exports = {
   ALLOWED_NAME_SYMBOLS: ['_', '$', '!', '~', '^'],
-  EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE: 'User with that email already exists',
   EMAIL_MAX_LENGTH: 255,
   NAME_MAX_LENGTH: 25,
   NAME_MIN_LENGTH: 5,
@@ -12,7 +11,6 @@ module.exports = {
   AVATAR_URL_IS_INCORRECT_MESSAGE: 'Avatar url does not provide a valid picture',
   PHONE_NUMBER_MAX_LENGTH: 15,
   PHONE_NUMBER_MIN_LENGTH: 5,
-  PHONE_NUMBER_IS_NOT_UNIQUE_MESSAGE: 'User with that phone number already exists',
   ALLOWED_PHONE_NUMBER_COUNTRY_CODE: [
     999, 998, 997, 996, 995, 994, 993, 992, 991, 990, 979, 978, 977, 976, 975, 974, 973,
     972, 971, 970, 969, 968, 967, 966, 965, 964, 963, 962, 961, 960, 899, 898, 897, 896,

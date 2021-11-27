@@ -1,12 +1,10 @@
 const { doesUrlContainAnImage } = require('../../helpers/urlChecker');
 const {
-  EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE,
-  PHONE_NUMBER_IS_NOT_UNIQUE_MESSAGE,
   ALLOWED_PHONE_NUMBER_COUNTRY_CODE,
   PHONE_NUMBER_IS_INVALID_MESSAGE,
 } = require('./constants');
 const db = require('../../models');
-const { ValidationError } = require('../../utils/errors');
+const { ConflictError } = require('../../utils/errors');
 const passwordService = require('../password/service');
 
 const createUser = async (data) => {
@@ -29,11 +27,8 @@ const createUser = async (data) => {
     return user;
   } catch (err) {
     if (err instanceof db.Sequelize.UniqueConstraintError) {
-      if (err.fields['users.phone_number']) {
-        throw new ValidationError(PHONE_NUMBER_IS_NOT_UNIQUE_MESSAGE);
-      } else {
-        throw new ValidationError(EMAIL_IS_NOT_UNIQUE_ERROR_MESSAGE);
-      }
+      const fieldName = Object.keys(err.fields)[0].split('.').at(-1);
+      throw new ConflictError(db.User.fieldRawAttributesMap[fieldName].fieldName);
     }
     throw err;
   }
@@ -56,18 +51,18 @@ const validatePhoneNumber = (value, helpers) => {
 
 const updateUser = async (user, newData) => {
   try {
-    const newUser = await user.update({ ...newData });
+    await db.User.update({ ...newData }, { where: { id: user.id } });
+    const newUser = await getUserById(user.id);
+    newUser.password = undefined;
     return newUser;
   } catch (err) {
     if (err instanceof db.Sequelize.UniqueConstraintError) {
-      if (err.fields['users.phone_number']) {
-        throw new ValidationError(PHONE_NUMBER_IS_NOT_UNIQUE_MESSAGE);
-      }
+      const fieldName = Object.keys(err.fields)[0].split('.').at(-1);
+      throw new ConflictError(db.User.fieldRawAttributesMap[fieldName].fieldName);
     }
     throw err;
   }
 };
-
 module.exports = {
   createUser,
   getUser,

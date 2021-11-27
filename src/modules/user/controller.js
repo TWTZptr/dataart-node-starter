@@ -31,6 +31,6 @@ const updateUser = async (req, res, next) => {
 
 router.post('/', validator(validateUser), createUser);
 router.get('/me', authMiddleware.access, getUser);
-router.patch('/me', validator(validateUserUpdate), authMiddleware.access, updateUser);
+router.patch('/me', authMiddleware.access, validator(validateUserUpdate), updateUser);
 
 module.exports = router;

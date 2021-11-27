@@ -51,6 +51,16 @@ class UnauthorizedError extends ServerError {
   }
 }
 
+class ConflictError extends ValidationError {
+  constructor(field) {
+    super(`${field} is not unique`);
+  }
+  name = 'ConflictError';
+  get status() {
+    return StatusCodes.CONFLICT;
+  }
+}
+
 function error404Handler(req, res, next) {
   return next(new NotFoundError(`Route ${req.method} ${req.originalUrl} not found`));
 }
@@ -60,5 +70,6 @@ module.exports = {
   NotFoundError,
   ValidationError,
   UnauthorizedError,
+  ConflictError,
   error404Handler,
 };
