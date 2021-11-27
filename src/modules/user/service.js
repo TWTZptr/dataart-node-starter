@@ -2,6 +2,7 @@ const { doesUrlContainAnImage } = require('../../helpers/urlChecker');
 const {
   ALLOWED_PHONE_NUMBER_COUNTRY_CODE,
   PHONE_NUMBER_IS_INVALID_MESSAGE,
+  NOT_UNIQUE_MESSAGE,
 } = require('./constants');
 const db = require('../../models');
 const { ConflictError } = require('../../utils/errors');
@@ -27,8 +28,8 @@ const createUser = async (data) => {
     return user;
   } catch (err) {
     if (err instanceof db.Sequelize.UniqueConstraintError) {
-      const fieldName = Object.keys(err.fields)[0].split('.').at(-1);
-      throw new ConflictError(db.User.fieldRawAttributesMap[fieldName].fieldName);
+      const fieldName = db.User.options.classMethods.getFieldName(err.fields);
+      throw new ConflictError(`${fieldName} ${NOT_UNIQUE_MESSAGE}`);
     }
     throw err;
   }
@@ -49,16 +50,16 @@ const validatePhoneNumber = (value, helpers) => {
   return condition ? value : helpers.message(PHONE_NUMBER_IS_INVALID_MESSAGE);
 };
 
-const updateUser = async (user, newData) => {
+const updateUser = async (id, newData) => {
   try {
-    await db.User.update({ ...newData }, { where: { id: user.id } });
-    const newUser = await getUserById(user.id);
+    await db.User.update({ ...newData }, { where: { id } });
+    const newUser = await getUserById(id);
     newUser.password = undefined;
     return newUser;
   } catch (err) {
     if (err instanceof db.Sequelize.UniqueConstraintError) {
-      const fieldName = Object.keys(err.fields)[0].split('.').at(-1);
-      throw new ConflictError(db.User.fieldRawAttributesMap[fieldName].fieldName);
+      const fieldName = db.User.options.classMethods.getFieldName(err.fields);
+      throw new ConflictError(`${fieldName} ${NOT_UNIQUE_MESSAGE}`);
     }
     throw err;
   }

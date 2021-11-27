@@ -52,9 +52,6 @@ class UnauthorizedError extends ServerError {
 }
 
 class ConflictError extends ValidationError {
-  constructor(field) {
-    super(`${field} is not unique`);
-  }
   name = 'ConflictError';
   get status() {
     return StatusCodes.CONFLICT;

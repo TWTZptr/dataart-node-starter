@@ -32,4 +32,5 @@ module.exports = {
     36, 34, 33, 32, 31, 30, 27, 20, 7, 1,
   ],
   PHONE_NUMBER_IS_INVALID_MESSAGE: 'Invalid phone number',
+  NOT_UNIQUE_MESSAGE: 'not unique',
 };

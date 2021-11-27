@@ -22,7 +22,7 @@ const getUser = (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const user = await userService.updateUser(req.user, req.body);
+    const user = await userService.updateUser(req.user.id, req.body);
     return res.sendResponse(StatusCodes.OK, user);
   } catch (err) {
     return next(err);

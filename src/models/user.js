@@ -50,6 +50,12 @@ module.exports = (sequelize, DataTypes) => {
           delete user.dataValues.password;
         },
       },
+      classMethods: {
+        getFieldName: (field) => {
+          const fieldName = Object.keys(field)[0].split('.').at(-1);
+          return User.fieldRawAttributesMap[fieldName].fieldName;
+        },
+      },
     },
   );
   return User;
