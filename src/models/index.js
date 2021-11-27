@@ -40,4 +40,10 @@ try {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+db.getFieldName = (errField, modelName) => {
+  const { fieldRawAttributesMap } = db[modelName];
+  const field = Object.keys(errField)[0].split('.').at(-1);
+  return fieldRawAttributesMap[field].fieldName;
+};
+
 module.exports = db;

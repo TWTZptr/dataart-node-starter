@@ -28,7 +28,7 @@ const createUser = async (data) => {
     return user;
   } catch (err) {
     if (err instanceof db.Sequelize.UniqueConstraintError) {
-      const fieldName = db.User.options.classMethods.getFieldName(err.fields);
+      const fieldName = db.getFieldName(err.fields, 'User');
       throw new ConflictError(`${fieldName} ${NOT_UNIQUE_MESSAGE}`);
     }
     throw err;
@@ -53,11 +53,10 @@ const validatePhoneNumber = (value, helpers) => {
 const updateUser = async (id, newData) => {
   try {
     await db.User.update({ ...newData }, { where: { id } });
-    const newUser = await getUserById(id, { exclude: ['password'] });
-    return newUser;
+    return getUserById(id, { exclude: ['password'] });
   } catch (err) {
     if (err instanceof db.Sequelize.UniqueConstraintError) {
-      const fieldName = db.User.options.classMethods.getFieldName(err.fields);
+      const fieldName = db.getFieldName(err.fields, 'User');
       throw new ConflictError(`${fieldName} ${NOT_UNIQUE_MESSAGE}`);
     }
     throw err;
