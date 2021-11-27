@@ -16,7 +16,7 @@ passport.use(
     },
     async (payload, done) => {
       try {
-        const user = await userService.getUser({ id: payload.id });
+        const user = await userService.getUserById(payload.id, { exclude: ['password'] });
         return done(null, user);
       } catch (e) {
         return done(new UnauthorizedError(INVALID_TOKEN_MESSAGE));
@@ -44,7 +44,6 @@ module.exports = {
       if (err || !user) {
         return next(new UnauthorizedError(INVALID_TOKEN_MESSAGE));
       }
-      user.password = undefined;
       req.user = user;
       return next();
     })(req, res, next);

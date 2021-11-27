@@ -35,12 +35,12 @@ const createUser = async (data) => {
   }
 };
 
-const getUser = (filter) => {
-  return db.User.findOne({ where: filter });
+const getUser = (filter, attributes) => {
+  return db.User.findOne({ where: filter, attributes });
 };
 
-const getUserById = (id) => {
-  return db.User.findByPk(id);
+const getUserById = (id, attributes) => {
+  return db.User.findByPk(id, { attributes });
 };
 
 const validatePhoneNumber = (value, helpers) => {
@@ -53,8 +53,7 @@ const validatePhoneNumber = (value, helpers) => {
 const updateUser = async (id, newData) => {
   try {
     await db.User.update({ ...newData }, { where: { id } });
-    const newUser = await getUserById(id);
-    newUser.password = undefined;
+    const newUser = await getUserById(id, { exclude: ['password'] });
     return newUser;
   } catch (err) {
     if (err instanceof db.Sequelize.UniqueConstraintError) {
