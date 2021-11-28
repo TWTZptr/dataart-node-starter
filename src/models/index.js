@@ -47,7 +47,7 @@ db.getFieldName = (errFields, modelName) => {
   const { fieldRawAttributesMap } = db[modelName];
   const field = Object.keys(errFields)[0].split('.').at(-1);
   if (!fieldRawAttributesMap[field]) {
-    throw new Error(`Attribute "${field}" does not exists`);
+    throw new Error(`Attribute "${field}" does not exist`);
   }
   return fieldRawAttributesMap[field].fieldName;
 };
