@@ -5,9 +5,12 @@ const {
   EMAIL_MAX_LENGTH,
   NAME_MIN_LENGTH,
   AVATAR_URL_MAX_LENGTH,
+  PHONE_NUMBER_MIN_LENGTH,
+  PHONE_NUMBER_MAX_LENGTH,
 } = require('../constants');
 const { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } = require('../../password/constants');
 const passwordService = require('../../password/service');
+const userService = require('../service');
 
 const validateUser = {
   source: 'body',
@@ -24,9 +27,25 @@ const validateUser = {
       .max(PASSWORD_MAX_LENGTH)
       .custom(passwordService.validate)
       .required(),
+    phoneNumber: Joi.string()
+      .custom(userService.validatePhoneNumber)
+      .min(PHONE_NUMBER_MIN_LENGTH)
+      .max(PHONE_NUMBER_MAX_LENGTH)
+      .required(),
+  }),
+};
+
+const validateUserUpdate = {
+  source: 'body',
+  schema: Joi.object({
+    phoneNumber: Joi.string()
+      .custom(userService.validatePhoneNumber)
+      .min(PHONE_NUMBER_MIN_LENGTH)
+      .max(PHONE_NUMBER_MAX_LENGTH),
   }),
 };
 
 module.exports = {
   validateUser,
+  validateUserUpdate,
 };
