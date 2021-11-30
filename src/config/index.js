@@ -7,6 +7,9 @@ const {
   ACCESS_TOKEN_EXPIRATION_TIME,
   REFRESH_TOKEN_SECRET,
   REFRESH_TOKEN_EXPIRATION_TIME,
+  TWILIO_SID,
+  TWILIO_TOKEN,
+  TWILIO_NUMBER,
 } = process.env;
 const database = require('./database');
 
@@ -23,5 +26,10 @@ module.exports = {
     ACCESS_TOKEN_EXPIRATION_TIME,
     REFRESH_TOKEN_SECRET,
     REFRESH_TOKEN_EXPIRATION_TIME,
+  },
+  TWILIO: {
+    SID: TWILIO_SID,
+    TOKEN: TWILIO_TOKEN,
+    NUMBER: TWILIO_NUMBER,
   },
 };

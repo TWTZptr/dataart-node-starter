@@ -28,6 +28,7 @@
     "passport": "^0.5.0",
     "passport-jwt": "^4.0.0",
     "sequelize": "^6.7.0",
+    "twilio": "^3.71.2",
     "winston": "^3.3.3"
   },
   "devDependencies": {
