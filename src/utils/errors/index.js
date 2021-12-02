@@ -58,6 +58,13 @@ class ConflictError extends ValidationError {
   }
 }
 
+class ForbiddenError extends ValidationError {
+  name = 'ForbiddenError';
+  get status() {
+    return StatusCodes.FORBIDDEN;
+  }
+}
+
 function error404Handler(req, res, next) {
   return next(new NotFoundError(`Route ${req.method} ${req.originalUrl} not found`));
 }
@@ -68,5 +75,6 @@ module.exports = {
   ValidationError,
   UnauthorizedError,
   ConflictError,
+  ForbiddenError,
   error404Handler,
 };
