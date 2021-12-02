@@ -13,15 +13,14 @@ module.exports = {
         unique: true,
         allowNull: false,
       },
-      active: {
+      activated: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: false,
       },
-      expirationTime: {
+      expiredAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        field: 'expiration_time',
       },
       userId: {
         type: Sequelize.INTEGER,

@@ -24,15 +24,14 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         allowNull: false,
       },
-      active: {
+      activated: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: false,
       },
-      expirationTime: {
+      expiredAt: {
         type: DataTypes.DATE,
         allowNull: false,
-        field: 'expiration_time',
       },
       userId: {
         type: DataTypes.INTEGER,
