@@ -8,4 +8,7 @@ module.exports = {
   PASSWORD_CONTAIN_BLOCKED_SYMBOLS_MESSAGE:
     "Password can't contain spaces or cyrillic symbols",
   PASSWORD_HASHING_SALT_ROUNDS: 10,
+  INVALID_SMS_CODE_MESSAGE: 'Invalid SMS code',
+  INVALID_PHONE_NUMBER: 'User with that phone number does not exist',
+  PASSWORD_REFRESH_TOKEN_DOES_NOT_EXIST: 'Forbidden',
 };

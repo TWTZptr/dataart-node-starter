@@ -7,6 +7,7 @@ const requestLogger = require('./utils/requestLogger');
 const resourceModule = require('./modules/resource');
 const userController = require('./modules/user/controller');
 const authController = require('./modules/auth/controller');
+const passwordController = require('./modules/password/controller');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use('/api/resources', resourceModule);
 app.use('/api/users', userController);
 app.use('/api/auth', authController);
+app.use('/api/password-recovery', passwordController);
 
 //in case any route mismatches request url - send 404 statusCode
 app.use(error404Handler);
