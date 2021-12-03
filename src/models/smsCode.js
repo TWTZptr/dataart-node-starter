@@ -1,5 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
+const smsTypes = require('../modules/sms/constants');
+
 module.exports = (sequelize, DataTypes) => {
   class SmsCode extends Model {
     /**
@@ -17,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.TINYINT.UNSIGNED,
       },
       code: {
         type: DataTypes.STRING(20),
@@ -41,6 +43,25 @@ module.exports = (sequelize, DataTypes) => {
           key: 'id',
         },
         field: 'user_id',
+      },
+      type: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        get() {
+          const typeValue = this.getDataValue('type');
+          switch (typeValue) {
+            case smsTypes.RESTORE_PASSWORD:
+              return 'RESTORE_PASSWORD';
+          }
+        },
+        set(value) {
+          switch (value) {
+            case 'RESTORE_PASSWORD':
+              this.setDataValue('type', smsTypes.RESTORE_PASSWORD);
+              break;
+          }
+        },
       },
       createdAt: {
         allowNull: false,
