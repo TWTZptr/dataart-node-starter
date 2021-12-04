@@ -12,6 +12,11 @@ const { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } = require('../../password/con
 const passwordService = require('../../password/service');
 const userService = require('../service');
 
+const phoneNumberSchema = Joi.string()
+  .custom(userService.validatePhoneNumber)
+  .min(PHONE_NUMBER_MIN_LENGTH)
+  .max(PHONE_NUMBER_MAX_LENGTH);
+
 const validateUser = {
   source: 'body',
   schema: Joi.object({
@@ -27,25 +32,19 @@ const validateUser = {
       .max(PASSWORD_MAX_LENGTH)
       .custom(passwordService.validate)
       .required(),
-    phoneNumber: Joi.string()
-      .custom(userService.validatePhoneNumber)
-      .min(PHONE_NUMBER_MIN_LENGTH)
-      .max(PHONE_NUMBER_MAX_LENGTH)
-      .required(),
+    phoneNumber: phoneNumberSchema.required(),
   }),
 };
 
 const validateUserUpdate = {
   source: 'body',
   schema: Joi.object({
-    phoneNumber: Joi.string()
-      .custom(userService.validatePhoneNumber)
-      .min(PHONE_NUMBER_MIN_LENGTH)
-      .max(PHONE_NUMBER_MAX_LENGTH),
+    phoneNumber: phoneNumberSchema,
   }),
 };
 
 module.exports = {
   validateUser,
   validateUserUpdate,
+  phoneNumberSchema,
 };
