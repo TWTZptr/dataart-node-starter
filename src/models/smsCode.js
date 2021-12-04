@@ -1,9 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
-const {
-  CODE_TYPE_RESTORE_PASSWORD,
-  CODE_TYPE_RESTORE_PASSWORD_STR,
-} = require('../modules/sms/constants');
+const { TYPES } = require('../modules/sms/constants');
 
 module.exports = (sequelize, DataTypes) => {
   class SmsCode extends Model {
@@ -54,14 +51,14 @@ module.exports = (sequelize, DataTypes) => {
         get() {
           const typeValue = this.getDataValue('type');
           switch (typeValue) {
-            case CODE_TYPE_RESTORE_PASSWORD:
-              return CODE_TYPE_RESTORE_PASSWORD_STR;
+            case TYPES.RESTORE_PASSWORD.VALUE:
+              return TYPES.RESTORE_PASSWORD.NAME;
           }
         },
         set(value) {
           switch (value) {
-            case CODE_TYPE_RESTORE_PASSWORD_STR:
-              this.setDataValue('type', CODE_TYPE_RESTORE_PASSWORD);
+            case TYPES.RESTORE_PASSWORD.NAME:
+              this.setDataValue('type', TYPES.RESTORE_PASSWORD.VALUE);
               break;
           }
         },
