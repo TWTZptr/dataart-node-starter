@@ -24,6 +24,7 @@
     "http-status-codes": "^2.1.4",
     "joi": "^17.4.2",
     "jsonwebtoken": "^8.5.1",
+    "luxon": "^2.1.1",
     "mysql2": "^2.3.0",
     "on-headers": "^1.0.2",
     "passport": "^0.5.0",

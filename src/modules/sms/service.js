@@ -7,6 +7,7 @@ const userService = require('../user/service');
 const authService = require('../auth/service');
 const { sendSMS } = require('../../helpers/twilio');
 const { Op } = require('sequelize');
+const { DateTime } = require('luxon');
 
 const hashids = new Hashids(SMS.SALT);
 
@@ -35,7 +36,7 @@ const generateSMSCode = async (id) => {
   const code = hashids.encode(id, Date.now());
   await db.SmsCodes.create({
     code,
-    expiredAt: new Date(Date.now() + +SMS.CODE_EXPIRATION_TIME),
+    expiredAt: DateTime.now().plus({ milliseconds: SMS.CODE_EXPIRATION_TIME }),
     userId: id,
   });
   return code;
