@@ -1,12 +1,12 @@
 const Logger = require('../logger');
-const { StatusCodes } = require('http-status-codes');
+const { StatusCodes, getReasonPhrase } = require('http-status-codes');
 
 class BusinessLogicError extends Error {
   name = 'BaseError';
   constructor(error) {
     const message = error instanceof Error ? error.message : error;
     super(message);
-    this.message = message || StatusCodes.getStatusText(this.status);
+    this.message = message || getReasonPhrase(this.status);
   }
   get status() {
     return StatusCodes.BAD_REQUEST;

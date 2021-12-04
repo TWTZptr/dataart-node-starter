@@ -5,7 +5,6 @@ const { AUTH } = require('../config');
 const userService = require('../modules/user/service');
 const { UnauthorizedError, ForbiddenError } = require('../utils/errors');
 const { INVALID_TOKEN_MESSAGE } = require('../modules/auth/constants');
-const { FORBIDDEN_ERROR_MESSAGE } = require('../modules/password/constants');
 const jwt = require('jsonwebtoken');
 
 passport.use(
@@ -88,7 +87,7 @@ module.exports = {
   restorePassword: (req, res, next) => {
     passport.authenticate('jwtRestorePasswordToken', (err, user, info) => {
       if (err || !user) {
-        return next(new ForbiddenError(FORBIDDEN_ERROR_MESSAGE));
+        return next(new ForbiddenError());
       }
       req.user = user;
       return next();

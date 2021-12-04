@@ -8,5 +8,4 @@ module.exports = {
   PASSWORD_CONTAIN_BLOCKED_SYMBOLS_MESSAGE:
     "Password can't contain spaces or cyrillic symbols",
   PASSWORD_HASHING_SALT_ROUNDS: 10,
-  FORBIDDEN_ERROR_MESSAGE: 'Forbidden',
 };
