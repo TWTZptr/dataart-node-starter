@@ -1,6 +1,9 @@
 'use strict';
 const { Model } = require('sequelize');
-const smsTypes = require('../modules/sms/constants');
+const {
+  CODE_TYPE_RESTORE_PASSWORD,
+  CODE_TYPE_RESTORE_PASSWORD_STR,
+} = require('../modules/sms/constants');
 
 module.exports = (sequelize, DataTypes) => {
   class SmsCode extends Model {
@@ -45,20 +48,20 @@ module.exports = (sequelize, DataTypes) => {
         field: 'user_id',
       },
       type: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.TINYINT.UNSIGNED,
         allowNull: false,
         defaultValue: 1,
         get() {
           const typeValue = this.getDataValue('type');
           switch (typeValue) {
-            case smsTypes.RESTORE_PASSWORD:
-              return 'RESTORE_PASSWORD';
+            case CODE_TYPE_RESTORE_PASSWORD:
+              return CODE_TYPE_RESTORE_PASSWORD_STR;
           }
         },
         set(value) {
           switch (value) {
-            case 'RESTORE_PASSWORD':
-              this.setDataValue('type', smsTypes.RESTORE_PASSWORD);
+            case CODE_TYPE_RESTORE_PASSWORD_STR:
+              this.setDataValue('type', CODE_TYPE_RESTORE_PASSWORD);
               break;
           }
         },
