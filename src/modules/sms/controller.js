@@ -17,8 +17,8 @@ const SMSRequest = async (req, res, next) => {
 const checkSMSCode = async (req, res, next) => {
   try {
     const { code } = req.body;
-    const { userId } = await smsService.verifySMSCode(code);
-    await smsService.useSMSCode(res, { code, userId });
+    const { id } = await smsService.verifySMSCode(code);
+    await smsService.useSMSCode(res, { code, id });
     return res.sendResponse(StatusCodes.OK);
   } catch (err) {
     return next(err);

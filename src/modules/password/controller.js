@@ -10,9 +10,9 @@ const router = express.Router();
 
 const restorePassword = async (req, res, next) => {
   try {
-    const { userId } = req.payload;
+    const { id } = req.user;
     const newPassword = req.body.password;
-    await userService.changeUserPassword(userId, newPassword);
+    await userService.changeUserPassword(id, newPassword);
     await res.clearCookie('restorePasswordToken');
     return res.sendResponse(StatusCodes.OK);
   } catch (err) {

@@ -86,11 +86,11 @@ module.exports = {
     })(req, res, next);
   },
   restorePassword: (req, res, next) => {
-    passport.authenticate('jwtRestorePasswordToken', (err, payload, info) => {
-      if (err || !payload) {
+    passport.authenticate('jwtRestorePasswordToken', (err, user, info) => {
+      if (err || !user) {
         return next(new ForbiddenError(FORBIDDEN_ERROR_MESSAGE));
       }
-      req.payload = payload;
+      req.user = user;
       return next();
     })(req, res, next);
   },

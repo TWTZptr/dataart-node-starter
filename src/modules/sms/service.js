@@ -5,30 +5,38 @@ const { SMS, AUTH } = require('../../config');
 const { ValidationError } = require('../../utils/errors');
 const userService = require('../user/service');
 const authService = require('../auth/service');
-const twilio = require('../../helpers/twilio');
+const { sendSMS } = require('../../helpers/twilio');
+const { Op } = require('sequelize');
 
 const hashids = new Hashids(SMS.SALT);
 
 const verifySMSCode = async (userCode) => {
-  const [userId] = hashids.decode(userCode);
-  if (!userId) {
+  const [id] = hashids.decode(userCode);
+  if (!id) {
     throw new ValidationError(INVALID_SMS_CODE_MESSAGE);
   }
 
-  const code = await getSMSCode(userCode);
-  if (!code || code.expiredAt < Date.now() || code.activated) {
+  const code = await getSMSCode({
+    [Op.and]: [
+      { code: userCode },
+      { activated: false },
+      { expiredAt: { [Op.gt]: Date.now() } },
+    ],
+  });
+
+  if (!code) {
     throw new ValidationError(INVALID_SMS_CODE_MESSAGE);
   }
 
-  return { userId };
+  return { id };
 };
 
-const generateSMSCode = async (userId) => {
-  const code = hashids.encode(userId, Date.now());
+const generateSMSCode = async (id) => {
+  const code = hashids.encode(id, Date.now());
   await db.SmsCodes.create({
     code,
     expiredAt: new Date(Date.now() + +SMS.CODE_EXPIRATION_TIME),
-    userId,
+    userId: id,
   });
   return code;
 };
@@ -44,20 +52,20 @@ const sendSMSCode = async (phoneNumber) => {
   }
 
   const code = await generateSMSCode(user.id);
-  await twilio.sendSMS(phoneNumber, `Password restore code: ${code}`);
+  await sendSMS(phoneNumber, `Password restore code: ${code}`);
 };
 
 const deactivateSMSCode = (code) => {
   return db.SmsCodes.update({ activated: true }, { where: { code } });
 };
 
-const getSMSCode = (code) => {
-  return db.SmsCodes.findOne({ where: { code } });
+const getSMSCode = (filter) => {
+  return db.SmsCodes.findOne({ where: filter });
 };
 
 const useSMSCode = async (res, payload) => {
   const token = authService.generateToken(
-    { userId: payload.userId },
+    { id: payload.id },
     AUTH.RESTORE_PASSWORD_TOKEN_SECRET,
     {
       expiresIn: AUTH.RESTORE_PASSWORD_TOKEN_EXPIRATION_TIME,
