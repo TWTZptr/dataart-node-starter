@@ -17,19 +17,19 @@ const verifySMSCode = async (userCode) => {
     throw new ValidationError(INVALID_SMS_CODE_MESSAGE);
   }
 
-  const code = await getSMSCode({
-    [Op.and]: [
-      { code: userCode },
-      { activated: false },
-      { expiredAt: { [Op.gt]: Date.now() } },
-    ],
-  });
+  const code = await getActiveSMSCode(userCode);
 
   if (!code) {
     throw new ValidationError(INVALID_SMS_CODE_MESSAGE);
   }
 
   return { id };
+};
+
+const getActiveSMSCode = (code) => {
+  return getSMSCode({
+    [Op.and]: [{ code }, { activated: false }, { expiredAt: { [Op.gt]: Date.now() } }],
+  });
 };
 
 const generateSMSCode = async (id) => {

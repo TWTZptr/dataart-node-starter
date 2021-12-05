@@ -1,11 +1,12 @@
 const Joi = require('joi');
-const passwordService = require('../service');
 const { phoneNumberSchema } = require('../../user/validators');
+const { passwordSchema } = require('../../user/validators');
+const { SMS_CODE_PATTERN } = require('../../sms/constants');
 
 const validateRestorePassword = {
   source: 'body',
   schema: Joi.object({
-    password: Joi.string().custom(passwordService.validate).required(),
+    password: passwordSchema.required(),
   }),
 };
 
@@ -19,7 +20,7 @@ const validateSMSRequest = {
 const validateSMSCode = {
   source: 'body',
   schema: Joi.object({
-    code: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]+$')).required(),
+    code: Joi.string().pattern(new RegExp(SMS_CODE_PATTERN)).required(),
   }),
 };
 

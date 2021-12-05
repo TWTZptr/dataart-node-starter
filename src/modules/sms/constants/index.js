@@ -7,4 +7,5 @@ module.exports = {
       VALUE: 1,
     },
   },
+  SMS_CODE_PATTERN: '^[a-zA-Z0-9]+$',
 };
