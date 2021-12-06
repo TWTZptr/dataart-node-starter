@@ -33,13 +33,7 @@ const getActiveSMSCode = (code) => {
 };
 
 const generateSMSCode = async (id) => {
-  const code = hashids.encode(id, Date.now());
-  await db.SmsCodes.create({
-    code,
-    expiredAt: DateTime.now().plus({ milliseconds: SMS.CODE_EXPIRATION_TIME }),
-    userId: id,
-  });
-  return code;
+  return hashids.encode(id, Date.now());
 };
 
 const sendSMSCode = async (phoneNumber) => {
@@ -53,7 +47,32 @@ const sendSMSCode = async (phoneNumber) => {
   }
 
   const code = await generateSMSCode(user.id);
-  await sendSMS(phoneNumber, `Password restore code: ${code}`);
+
+  let transaction;
+
+  try {
+    transaction = await db.sequelize.transaction();
+    await createSMSCode({ code, id: user.id }, { transaction });
+    await sendSMS(phoneNumber, `Password restore code: ${code}`);
+    await transaction.commit();
+  } catch (err) {
+    if (transaction) {
+      await transaction.rollback();
+    }
+
+    throw err;
+  }
+};
+
+const createSMSCode = ({ code, id }, options) => {
+  return db.SmsCodes.create(
+    {
+      code,
+      expiredAt: DateTime.now().plus({ milliseconds: SMS.CODE_EXPIRATION_TIME }),
+      userId: id,
+    },
+    options,
+  );
 };
 
 const deactivateSMSCode = (code) => {
