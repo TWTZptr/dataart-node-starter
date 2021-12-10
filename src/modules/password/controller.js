@@ -45,7 +45,7 @@ const checkSMSCode = async (req, res, next) => {
   }
 };
 
-router.post('/sms-dispatcher', validator(validateSMSRequest), SMSRequest);
+router.post('/smscode-recovery', validator(validateSMSRequest), SMSRequest);
 router.post('/smscode-verification', validator(validateSMSCode), checkSMSCode);
 router.put(
   '/',
