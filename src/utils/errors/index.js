@@ -1,12 +1,12 @@
 const Logger = require('../logger');
-const { StatusCodes } = require('http-status-codes');
+const { StatusCodes, getReasonPhrase } = require('http-status-codes');
 
 class BusinessLogicError extends Error {
   name = 'BaseError';
   constructor(error) {
     const message = error instanceof Error ? error.message : error;
     super(message);
-    this.message = message || StatusCodes.getStatusText(this.status);
+    this.message = message || getReasonPhrase(this.status);
   }
   get status() {
     return StatusCodes.BAD_REQUEST;
@@ -58,6 +58,13 @@ class ConflictError extends ValidationError {
   }
 }
 
+class ForbiddenError extends ValidationError {
+  name = 'ForbiddenError';
+  get status() {
+    return StatusCodes.FORBIDDEN;
+  }
+}
+
 function error404Handler(req, res, next) {
   return next(new NotFoundError(`Route ${req.method} ${req.originalUrl} not found`));
 }
@@ -68,5 +75,6 @@ module.exports = {
   ValidationError,
   UnauthorizedError,
   ConflictError,
+  ForbiddenError,
   error404Handler,
 };

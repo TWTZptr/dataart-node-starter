@@ -43,6 +43,11 @@ const getUserById = (id, attributes) => {
   return db.User.findByPk(id, { attributes });
 };
 
+const changeUserPassword = async (id, newPassword) => {
+  const hash = await passwordService.hash(newPassword);
+  await updateUser(id, { password: hash });
+};
+
 const validatePhoneNumber = (value, helpers) => {
   const condition = value.match(
     `^\\+(${ALLOWED_PHONE_NUMBER_COUNTRY_CODE.join('|')})[0-9]{6,10}$`,
@@ -62,10 +67,12 @@ const updateUser = async (id, newData) => {
     throw err;
   }
 };
+
 module.exports = {
   createUser,
   getUser,
   getUserById,
   validatePhoneNumber,
   updateUser,
+  changeUserPassword,
 };
