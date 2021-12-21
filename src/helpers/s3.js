@@ -77,6 +77,10 @@ const findObjectsByUserId = async (userId) => {
     }),
   );
 
+  if (!files.Contents) {
+    return [];
+  }
+
   return files.Contents.map((file) => generateS3link(file.Key));
 };
 
