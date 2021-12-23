@@ -56,6 +56,9 @@ passport.use(
 module.exports = {
   access: (req, res, next) => {
     passport.authenticate('jwtAccessToken', (err, user, info) => {
+      if (req.params.userId && req.params.userId != user.id) {
+        return next(new ForbiddenError());
+      }
       if (err || !user) {
         return next(new UnauthorizedError(INVALID_TOKEN_MESSAGE));
       }
