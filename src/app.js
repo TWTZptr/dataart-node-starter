@@ -32,7 +32,7 @@ app.use('/api/resources', resourceModule);
 app.use('/api/users', userController);
 app.use('/api/auth', authController);
 app.use('/api/passwords', passwordController);
-app.use('/api/users/:userId/files', fileController);
+app.use('/api/files', fileController);
 
 //in case any route mismatches request url - send 404 statusCode
 app.use(error404Handler);

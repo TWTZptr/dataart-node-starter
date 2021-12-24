@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      s3key: {
+      key: {
         type: Sequelize.STRING(30),
         unique: true,
         allowNull: false,
@@ -21,15 +21,6 @@ module.exports = {
           key: 'id',
         },
         field: 'owner_id',
-      },
-      extension: {
-        type: Sequelize.STRING(5),
-        allowNull: false,
-      },
-      originalName: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        field: 'original_name',
       },
       createdAt: {
         allowNull: false,

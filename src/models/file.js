@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const { generateS3link } = require('../helpers/s3');
 module.exports = (sequelize, DataTypes) => {
   class File extends Model {
     /**
@@ -13,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   File.init(
     {
-      s3key: {
+      key: {
         type: DataTypes.STRING(30),
         unique: true,
         allowNull: false,
@@ -27,14 +28,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         field: 'owner_id',
       },
-      extension: {
-        type: DataTypes.STRING(5),
-        allowNull: false,
-      },
-      originalName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        field: 'original_name',
+      link: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          return generateS3link(this.key);
+        },
       },
     },
     {

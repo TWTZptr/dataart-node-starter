@@ -2,27 +2,13 @@ const express = require('express');
 const fileService = require('./service');
 const authMiddleware = require('../../middlewares/auth');
 const { StatusCodes } = require('http-status-codes');
-const multiparty = require('multiparty');
 
 const router = express.Router({ mergeParams: true });
 
 const uploadFiles = async (req, res, next) => {
   try {
-    const form = new multiparty.Form();
-    let files = [];
-
-    form.on('part', async (part) => {
-      if (part.filename) {
-        files.push(fileService.uploadFileFromPart(req.user.id, part));
-      }
-    });
-
-    form.on('close', async () => {
-      files = await Promise.all(files);
-      return res.sendResponse(StatusCodes.OK, { files });
-    });
-
-    form.parse(req);
+    const file = await fileService.uploadFile(req.user.id, req);
+    return res.sendResponse(StatusCodes.OK, file);
   } catch (err) {
     return next(err);
   }

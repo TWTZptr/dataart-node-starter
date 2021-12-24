@@ -10,7 +10,7 @@ const generateS3link = (filename) => {
   return `https://${S3.BUCKET_NAME}.s3.${S3.REGION}.amazonaws.com/${filename}`;
 };
 
-const s3uploader = async (stream, key, { contentType, contentLength }) => {
+const s3uploader = (stream, key, { contentType }) => {
   const upload = new Upload({
     client: s3,
     params: {

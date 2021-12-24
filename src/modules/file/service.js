@@ -1,42 +1,28 @@
-const { findObjectsByUserId, s3uploader, generateS3link } = require('../../helpers/s3');
-const { FORBIDDEN_FILE_EXTENSION, ALLOWED_FILE_EXTENSIONS } = require('./constants');
+const { s3uploader } = require('../../helpers/s3');
 const { S3 } = require('../../config');
 const Hashids = require('hashids');
 const db = require('../../models');
 
 const hashids = new Hashids(S3.FILENAME_SALT);
 
-const uploadFileFromPart = async (userId, part) => {
+const uploadFile = async (userId, stream) => {
   let transaction;
   try {
-    const extension = part.filename.split('.').at(-1);
-    if (!ALLOWED_FILE_EXTENSIONS.includes(extension)) {
-      part.resume();
-      return { success: false, error: FORBIDDEN_FILE_EXTENSION };
-    }
-
-    const s3key = generateFilename(userId, extension);
+    const key = generateFilename(userId);
 
     transaction = await db.sequelize.transaction();
-    const file = await createFile(
-      {
-        s3key,
-        ownerId: userId,
-        extension,
-        originalName: part.filename,
-      },
-      { transaction },
-    );
 
-    await s3uploader(part, s3key, {
-      contentType: part.headers['content-type'],
+    const file = await createFile({ key, ownerId: userId }, { transaction });
+
+    await s3uploader(stream, key, {
+      contentType: stream.headers['content-type'],
     });
+
     await transaction.commit();
+
     return {
       ...file.dataValues,
-      link: generateS3link(s3key),
-      success: true,
-      error: null,
+      link: file.link,
     };
   } catch (err) {
     if (transaction) {
@@ -47,8 +33,8 @@ const uploadFileFromPart = async (userId, part) => {
   }
 };
 
-const generateFilename = (userId, extension) => {
-  return `${hashids.encode(userId)}/${hashids.encode(userId, Date.now())}.${extension}`;
+const generateFilename = (userId) => {
+  return `${hashids.encode(userId)}/${hashids.encode(userId, Date.now())}`;
 };
 
 const createFile = (file, options) => {
@@ -60,29 +46,13 @@ const getFilesByUserOwnerId = (ownerId) => {
 };
 
 const findUserFiles = async (userId) => {
-  const s3UserFiles = await findObjectsByUserId(userId);
   const dbUserFiles = await getFilesByUserOwnerId(userId);
-  const userFiles = [];
 
-  dbUserFiles.forEach((dbFile) => {
-    s3UserFiles.every((s3File) => {
-      if (s3File.Key === dbFile.s3key) {
-        userFiles.push({
-          ...dbFile.dataValues,
-          size: s3File.Size,
-          link: generateS3link(s3File.Key),
-        });
-        return false;
-      }
-      return true;
-    });
-  });
-
-  return userFiles;
+  return dbUserFiles;
 };
 
 module.exports = {
-  uploadFileFromPart,
+  uploadFile,
   findUserFiles,
   createFile,
 };
