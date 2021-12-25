@@ -14,6 +14,9 @@ const {
   SMS_CODE_SALT,
   RESTORE_PASSWORD_TOKEN_SECRET,
   RESTORE_PASSWORD_TOKEN_EXPIRATION_TIME,
+  S3_BUCKET_NAME,
+  S3_REGION,
+  S3_FILENAME_SALT,
 } = process.env;
 const database = require('./database');
 
@@ -41,5 +44,10 @@ module.exports = {
   SMS: {
     CODE_EXPIRATION_TIME: SMS_CODE_EXPIRATION_TIME,
     SALT: SMS_CODE_SALT,
+  },
+  S3: {
+    BUCKET_NAME: S3_BUCKET_NAME,
+    REGION: S3_REGION,
+    FILENAME_SALT: S3_FILENAME_SALT,
   },
 };
